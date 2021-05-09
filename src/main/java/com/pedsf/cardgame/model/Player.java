@@ -20,4 +20,12 @@ public class Player {
    public PlayingCard removeCard() {
       return hand.removeCard();
    }
+
+   public PlayingCard getCard(int index) {
+      return hand.getCard(index);
+   }
+
+   public String getName() {
+      return name;
+   }
 }

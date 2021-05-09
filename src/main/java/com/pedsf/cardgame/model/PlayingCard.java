@@ -11,6 +11,7 @@ public class PlayingCard {
    public PlayingCard(Suit suit, Rank rank) {
       this.suit = suit;
       this.rank = rank;
+      this.faceUp = false;
    }
 
    public Rank getRank() {
