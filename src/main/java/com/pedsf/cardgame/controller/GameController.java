@@ -1,5 +1,6 @@
 package com.pedsf.cardgame.controller;
 
+import com.pedsf.cardgame.games.GameEvaluator;
 import com.pedsf.cardgame.model.Deck;
 import com.pedsf.cardgame.model.Player;
 import com.pedsf.cardgame.model.PlayingCard;
@@ -18,15 +19,17 @@ public class GameController {
    }
 
    Deck deck;
+   View view;
+   GameEvaluator gameEvaluator;
    List<Player> players;
    Player winner;
-   View view;
    GameState gameState;
 
-   public GameController(Deck deck, View view) {
+   public GameController(Deck deck, View view, GameEvaluator gameEvaluator) {
       super();
       this.deck = deck;
       this.view = view;
+      this.gameEvaluator = gameEvaluator;
       this.players = new ArrayList<>();
       this.gameState = GameState.ADDING_PLAYERS;
       view.setController(this);
@@ -85,38 +88,7 @@ public class GameController {
    }
 
    void evaluateWinner() {
-      Player bestPlayer = null;
-      int bestRank = -1;
-      int bestSuit = -1;
-
-      for (Player player : players) {
-         boolean newBestPlayer = false;
-
-         if (bestPlayer == null) {
-            newBestPlayer = true;
-         } else {
-            PlayingCard pc = player.getCard(0);
-            int thisRank = pc.getRank().value();
-            if (thisRank >= bestRank) {
-               if (thisRank > bestRank) {
-                  newBestPlayer = true;
-               } else {
-                  if (pc.getSuit().value() > bestSuit) {
-                     newBestPlayer = true;
-                  }
-               }
-            }
-         }
-
-         if (newBestPlayer) {
-            bestPlayer = player;
-            PlayingCard pc = player.getCard(0);
-            bestRank = pc.getRank().value();
-            bestSuit = pc.getSuit().value();
-         }
-      }
-
-      winner = bestPlayer;
+      winner = gameEvaluator.evaluateWinner(players);
    }
 
    void displayWinner() {
