@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Scanner;
 
 @Slf4j
-public class View {
+public class CommandLineView implements GameViewable{
 
    GameController gameController;
 
@@ -33,9 +33,9 @@ public class View {
    }
 
    public void promptForNewGame() {
-      log.info("Press enter to deal again");
-      keyboard.nextLine();
-      gameController.startGame();
+      log.info("Press enter to deal again or q to exit");
+      gameController.nextAction(keyboard.nextLine());
+
    }
 
    public void showWinner(String playerName) {

@@ -4,48 +4,47 @@ import com.pedsf.cardgame.games.GameEvaluator;
 import com.pedsf.cardgame.model.Deck;
 import com.pedsf.cardgame.model.Player;
 import com.pedsf.cardgame.model.PlayingCard;
-import com.pedsf.cardgame.view.View;
+import com.pedsf.cardgame.view.CommandLineView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.System.exit;
-
 
 public class GameController {
+
 
    enum GameState {
       ADDING_PLAYERS, CARDS_DEALT, WINNER_REVEALED
    }
 
    Deck deck;
-   View view;
+   CommandLineView commandLineView;
    GameEvaluator gameEvaluator;
    List<Player> players;
    Player winner;
    GameState gameState;
 
-   public GameController(Deck deck, View view, GameEvaluator gameEvaluator) {
+   public GameController(Deck deck, CommandLineView commandLineView, GameEvaluator gameEvaluator) {
       super();
       this.deck = deck;
-      this.view = view;
+      this.commandLineView = commandLineView;
       this.gameEvaluator = gameEvaluator;
       this.players = new ArrayList<>();
       this.gameState = GameState.ADDING_PLAYERS;
-      view.setController(this);
+      commandLineView.setController(this);
    }
 
    public void run() {
       while (gameState == GameState.ADDING_PLAYERS) {
-         view.promptForPlayerName();
+         commandLineView.promptForPlayerName();
       }
 
       switch (gameState) {
          case CARDS_DEALT:
-            view.promptForFlip();
+            commandLineView.promptForFlip();
             break;
          case WINNER_REVEALED:
-            view.promptForNewGame();
+            commandLineView.promptForNewGame();
             break;
          default:
       }
@@ -54,7 +53,7 @@ public class GameController {
    public void addPlayer(String playerName) {
       if (gameState == GameState.ADDING_PLAYERS) {
          players.add(new Player(playerName));
-         view.showPlayerName(players.size(), playerName);
+         commandLineView.showPlayerName(players.size(), playerName);
       }
    }
 
@@ -64,7 +63,7 @@ public class GameController {
          int playerIndex = 1;
          for (Player player : players) {
             player.addCardToHand(deck.removeTopCard());
-            view.showFaceDownCardForPlayer(playerIndex++, player.getName());
+            commandLineView.showFaceDownCardForPlayer(playerIndex++, player.getName());
          }
          gameState = GameState.CARDS_DEALT;
       }
@@ -76,7 +75,7 @@ public class GameController {
       for (Player player : players) {
          PlayingCard pc = player.getCard(0);
          pc.flip();
-         view.showCardForPlayer(playerIndex++, player.getName(),
+         commandLineView.showCardForPlayer(playerIndex++, player.getName(),
                pc.getRank().toString(), pc.getSuit().toString());
       }
 
@@ -92,7 +91,7 @@ public class GameController {
    }
 
    void displayWinner() {
-      view.showWinner(winner.getName());
+      commandLineView.showWinner(winner.getName());
    }
 
    void rebuildDeck() {
@@ -100,4 +99,17 @@ public class GameController {
          deck.returnCardToDeck(player.removeCard());
       }
    }
+
+   void exitGame() {
+      System.exit(0);
+   }
+
+   public void nextAction(String choice) {
+      if(choice.equals("q")) {
+         exitGame();
+      } else {
+         startGame();
+      }
+   }
+
 }
