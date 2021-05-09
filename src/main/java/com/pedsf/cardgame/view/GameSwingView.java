@@ -86,7 +86,7 @@ public class GameSwingView implements GameViewable {
    @Override
    public void promptForPlayerName() {
 
-      String result = (String) JOptionPane.showInputDialog(frame, "Add a player", "Player",
+      String result = (String) JOptionPane.showInputDialog(frame, "Add a player", "IPlayer",
             JOptionPane.PLAIN_MESSAGE, null, null, "");
 
       if(result == null || result.isEmpty()) {

@@ -1,9 +1,6 @@
 package com.pedsf.cardgame.model;
 
-/**
- * Class for the player
- */
-public class Player {
+public class Player implements IPlayer{
    private String name;
    private Hand hand;
 

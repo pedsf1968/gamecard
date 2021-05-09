@@ -1,24 +1,24 @@
 package com.pedsf.cardgame.games;
 
-import com.pedsf.cardgame.model.Player;
+import com.pedsf.cardgame.model.IPlayer;
 import com.pedsf.cardgame.model.PlayingCard;
 
 import java.util.List;
 
 public class LowCardGameEvaluator implements GameEvaluator {
 
-   public Player evaluateWinner(List<Player> playerList) {
-      Player bestPlayer = null;
+   public IPlayer evaluateWinner(List<IPlayer> IPlayerList) {
+      IPlayer bestIPlayer = null;
       int bestRank = -1;
       int bestSuit = -1;
 
-      for (Player player : playerList) {
+      for (IPlayer IPlayer : IPlayerList) {
          boolean newBestPlayer = false;
 
-         if (bestPlayer == null) {
+         if (bestIPlayer == null) {
             newBestPlayer = true;
          } else {
-            PlayingCard pc = player.getCard(0);
+            PlayingCard pc = IPlayer.getCard(0);
             int thisRank = pc.getRank().value();
             if (thisRank <= bestRank) {
                if (thisRank < bestRank) {
@@ -32,13 +32,13 @@ public class LowCardGameEvaluator implements GameEvaluator {
          }
 
          if (newBestPlayer) {
-            bestPlayer = player;
-            PlayingCard pc = player.getCard(0);
+            bestIPlayer = IPlayer;
+            PlayingCard pc = IPlayer.getCard(0);
             bestRank = pc.getRank().value();
             bestSuit = pc.getSuit().value();
          }
       }
 
-      return bestPlayer;
+      return bestIPlayer;
    }
 }

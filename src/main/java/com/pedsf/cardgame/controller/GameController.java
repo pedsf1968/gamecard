@@ -1,10 +1,7 @@
 package com.pedsf.cardgame.controller;
 
 import com.pedsf.cardgame.games.GameEvaluator;
-import com.pedsf.cardgame.model.Deck;
-import com.pedsf.cardgame.model.Player;
-import com.pedsf.cardgame.model.PlayingCard;
-import com.pedsf.cardgame.view.CommandLineView;
+import com.pedsf.cardgame.model.*;
 import com.pedsf.cardgame.view.GameViewable;
 
 import java.util.ArrayList;
@@ -21,8 +18,8 @@ public class GameController {
    Deck deck;
    GameViewable gameViewable;
    GameEvaluator gameEvaluator;
-   List<Player> players;
-   Player winner;
+   List<IPlayer> Players;
+   IPlayer winner;
    GameState gameState;
 
    public GameController(Deck deck, GameViewable gameViewable, GameEvaluator gameEvaluator) {
@@ -30,7 +27,7 @@ public class GameController {
       this.deck = deck;
       this.gameViewable = gameViewable;
       this.gameEvaluator = gameEvaluator;
-      this.players = new ArrayList<>();
+      this.Players = new ArrayList<>();
       this.gameState = GameState.ADDING_PLAYERS;
       gameViewable.setController(this);
    }
@@ -53,8 +50,8 @@ public class GameController {
 
    public void addPlayer(String playerName) {
       if (gameState == GameState.ADDING_PLAYERS) {
-         players.add(new Player(playerName));
-         gameViewable.showPlayerName(players.size(), playerName);
+         Players.add(new Player(playerName));
+         gameViewable.showPlayerName(Players.size(), playerName);
       }
    }
 
@@ -62,9 +59,9 @@ public class GameController {
       if (gameState != GameState.CARDS_DEALT) {
          deck.shuffle();
          int playerIndex = 1;
-         for (Player player : players) {
-            player.addCardToHand(deck.removeTopCard());
-            gameViewable.showFaceDownCardForPlayer(playerIndex++, player.getName());
+         for (IPlayer IPlayer : Players) {
+            IPlayer.addCardToHand(deck.removeTopCard());
+            gameViewable.showFaceDownCardForPlayer(playerIndex++, IPlayer.getName());
          }
          gameState = GameState.CARDS_DEALT;
       }
@@ -73,10 +70,10 @@ public class GameController {
 
    public void flipCards() {
       int playerIndex = 1;
-      for (Player player : players) {
-         PlayingCard pc = player.getCard(0);
+      for (IPlayer IPlayer : Players) {
+         PlayingCard pc = IPlayer.getCard(0);
          pc.flip();
-         gameViewable.showCardForPlayer(playerIndex++, player.getName(),
+         gameViewable.showCardForPlayer(playerIndex++, IPlayer.getName(),
                pc.getRank().toString(), pc.getSuit().toString());
       }
 
@@ -88,7 +85,7 @@ public class GameController {
    }
 
    void evaluateWinner() {
-      winner = gameEvaluator.evaluateWinner(players);
+      winner = new WinningPlayer(gameEvaluator.evaluateWinner(Players));
    }
 
    void displayWinner() {
@@ -96,8 +93,8 @@ public class GameController {
    }
 
    void rebuildDeck() {
-      for (Player player : players) {
-         deck.returnCardToDeck(player.removeCard());
+      for (IPlayer IPlayer : Players) {
+         deck.returnCardToDeck(IPlayer.removeCard());
       }
    }
 
